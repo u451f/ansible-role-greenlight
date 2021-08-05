@@ -1,0 +1,67 @@
+---
+- name: Create greenlight directory
+  file:
+    state: directory
+    path: "{{ greenlight_inst_dir }}"
+
+- name: Deploy terms.md
+  copy:
+    content: "{{ greenlight_terms }}"
+    dest: "{{ greenlight_inst_dir }}/terms.md"
+  when: greenlight_terms is defined
+
+- name: Setup greenlight docker-compose
+  block:
+    - name: Deploy docker-compose file
+      template:
+        src: docker-compose.yml.j2
+        dest: "{{ greenlight_inst_dir }}/docker-compose.yml"
+        mode: '640'
+      notify: restart greenlight
+
+    - name: Deploy greenlight environment file
+      template:
+        src: env.j2
+        dest: "{{ greenlight_inst_dir }}/.env"
+        mode: '640'
+      notify: restart greenlight
+
+    - name: Launch docker-compose
+      docker_compose:
+        pull: yes
+        project_src: "{{ greenlight_inst_dir }}"
+      when: not ansible_check_mode
+  tags: greenlight-compose
+
+- name: Deploy nginx reverse proxy
+  block:
+    - name: Install nginx
+      apt:
+        name: nginx
+
+    - file:
+        state: directory
+        path: /etc/nginx/ssl
+
+    - name: Generating dhparam (It takes some time !)
+      shell: openssl dhparam -out /etc/nginx/ssl/dhp-4096.pem 4096
+      args:
+        creates: /etc/nginx/ssl/dhp-4096.pem
+
+    - name: Deploy greenlight vhost
+      template:
+        src: greenlight.nginx.j2
+        dest: /etc/nginx/conf.d/greenlight.conf
+        validate: bash -c 'nginx -t -c /dev/stdin <<< "events {worker_connections 100;} http { include %s; }"'
+      notify: restart nginx
+  tags: greenlight-nginx
+
+# TODO
+#- name: Setup backups for greenlight
+#  import_tasks: backup.yml
+
+- name: Deploy privacy policy
+  import_tasks: privacy-policy.yml
+  tags:
+    - greenlight-privacy
+    - privacy

@@ -1,0 +1,63 @@
+---
+# openssk rand -hex 64
+#greenlight_secret_key:
+
+greenlight_aliases: []
+greenlight_endpoint_name: "{{ hostvars[groups.greenlight[0]]['ansible_host'] }}"
+
+greenlight_docker_image: bigbluebutton/greenlight:v2
+
+greenlight_db_docker: yes
+greenlight_postgres_version_docker_tag: 13.2-alpine
+# only if greenlight_db_docker is false
+#greenlight_db_host:
+greenlight_db_user: greenlight
+greenlight_db_pass: greenlight
+greenlight_db_name: greenlight_prod
+greenlight_inst_dir: /srv/greenlight
+greenlight_logdir: /var/log/greenlight
+greenlight_backup_dir: /srv/greenlight/backups
+# storage for preuploaded presentations
+greenlight_storage_dir: './storage'
+
+greenlight_ldap_server: ''
+greenlight_ldap_port: ''
+greenlight_ldap_method: ''
+greenlight_ldap_uid: ''
+greenlight_ldap_base: ''
+greenlight_ldap_bind_dn: ''
+greenlight_ldap_bind_pwd: ''
+greenlight_ldap_auth: ''
+greenlight_ldap_role_field: ''
+greenlight_ldap_filter: ''
+greenlight_ldap_attribute_mapping: ''
+
+greenlight_allow_accounts: "true"
+
+greenlight_smtp_server: ''
+greenlight_smtp_port: ''
+greenlight_smtp_domain: ''
+greenlight_smtp_username: ''
+greenlight_smtp_password: ''
+greenlight_smtp_auth: ''
+greenlight_smtp_starttls_auto: ''
+greenlight_smtp_sender: ''
+
+greenlight_report_url: https://github.com/bigbluebutton/greenlight/issues/new
+greenlight_help_url: https://docs.bigbluebutton.org/greenlight/gl-overview.html
+greenlight_relative_url_root: "/b"
+# max size of preuploaded presentations (nginx client_max_body_size)
+greenlight_max_presentation_upload_size: '30m'
+
+greenlight_enable_google_calender_button: "false"
+
+greenlight_maintenance_mode: 'false'
+
+# greenlight application (rails) log level
+# Allowed values are: debug|info|warn|error|fatal|unknown
+# For details, see: https://docs.ruby-lang.org/en/master/Logger.html
+greenlight_log_level: 'info'
+
+greenlight_enable_recording_thumbnails: true
+# orginal logo url
+# https://raw.githubusercontent.com/bigbluebutton/greenlight/master/app/assets/images/logo_with_text.png

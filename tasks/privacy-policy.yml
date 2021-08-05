@@ -1,0 +1,19 @@
+---
+- name: Setup privacy policy site
+  copy:
+    src: greenlight/datenschutzerklaerung
+    dest: /var/www/html/
+
+- name: create snippets/locations directory
+  file:
+    name: /etc/nginx/snippets/locations
+    state: directory
+
+- name: privacy location
+  template:
+    src: nginx_extra_locations/privacy.conf.j2
+    dest: "/etc/nginx/snippets/locations/privacy.conf"
+    owner: root
+    group: root
+    mode: '644'
+  notify: reload nginx

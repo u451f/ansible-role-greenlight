@@ -1,0 +1,14 @@
+---
+- name: restart greenlight
+  docker_compose:
+    project_src: "{{ greenlight_inst_dir }}"
+
+- name: restart nginx
+  service:
+    name: nginx
+    state: restarted
+
+- name: reload nginx
+  service:
+    name: nginx
+    state: reloaded
