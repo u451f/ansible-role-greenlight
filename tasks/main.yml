@@ -31,6 +31,28 @@
         pull: yes
         project_src: "{{ greenlight_inst_dir }}"
       when: not ansible_check_mode
+
+    - name: wait until rake did all necessary migrations
+      community.docker.docker_container_exec:
+        container: greenlight-v2
+        command: bundle exec rake db:abort_if_pending_migrations
+      register: greenlight_rake
+      until: greenlight_rake.rc == 0
+      retries: 10
+      when:
+        - not ansible_check_mode
+        - greenlight_users | length > 0
+
+    # https://docs.bigbluebutton.org/greenlight/gl-admin.html#creating-accounts
+    - name: Create greenlight users
+      community.docker.docker_container_exec:
+        container: greenlight-v2
+        command: "bundle exec rake user:create[\"{{ item.name }}\",\"{{ item.email }}\",\"{{ item.password }}\",\"{{ item.type }}\"]"
+      loop: "{{ greenlight_users | flatten(levels=1) }}"
+      register: usercreate
+      failed_when: "'Invalid Arguments' in usercreate.stdout"
+      changed_when: "'Account successfully created' in usercreate.stdout"
+
   tags: greenlight-compose
 
 - name: Deploy nginx reverse proxy

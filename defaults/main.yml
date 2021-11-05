@@ -20,6 +20,10 @@ greenlight_backup_dir: /srv/greenlight/backups
 # storage for preuploaded presentations
 greenlight_storage_dir: './storage'
 
+greenlight_users: []
+#  - { name: '', email: '', password: '', type: 'user' }
+#  - { name: '', email: '', password: '', type: 'admin' }
+
 greenlight_ldap_server: ''
 greenlight_ldap_port: ''
 greenlight_ldap_method: ''
