@@ -16,8 +16,7 @@ greenlight_db_pass: greenlight
 greenlight_db_name: greenlight_prod
 greenlight_inst_dir: /srv/greenlight
 greenlight_logdir: /var/log/greenlight
-greenlight_backup_dir: /srv/greenlight/backups
-# storage for preuploaded presentations
+# storage for preuploaded presentations, relative to greenlight_inst_dir
 greenlight_storage_dir: './storage'
 
 greenlight_users: []
