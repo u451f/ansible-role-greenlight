@@ -1,5 +1,4 @@
 ---
-# TODO externalize
 - name: install prometheus node-exporter with cloudalchemy-role
   import_role:
     name: cloudalchemy.node_exporter
