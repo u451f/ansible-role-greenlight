@@ -27,7 +27,7 @@
       notify: restart greenlight
 
     - name: Launch docker-compose
-      docker_compose:
+      community.docker.docker_compose:
         pull: yes
         project_src: "{{ greenlight_inst_dir }}"
       when: not ansible_check_mode
