@@ -1,6 +1,10 @@
+
+limit_req_zone $binary_remote_addr zone=req_zone:10m rate=30r/s;
+limit_conn_zone $binary_remote_addr zone=conn_zone:10m;
+
 server {
   server_name  {{ ansible_host }} {{ greenlight_aliases|join(' ') }};
-  listen   80;
+  listen 80;
   # TODO make var listen [::]:80;
 
   return 301 https://$host$request_uri;
@@ -24,6 +28,12 @@ server {
   resolver 130.75.1.32 130.75.1.40 valid=10m ipv6=off;
   resolver_timeout 1s;
 
+  # Request/Conn Limit
+  limit_req zone=req_zone burst=150 delay=50;
+  limit_req_status 429;
+  limit_conn conn_zone 25;
+  limit_conn_dry_run off;
+  limit_req_dry_run off;
 
   # TODO security-header
 
@@ -31,7 +41,7 @@ server {
 
   # Redirect server error pages to the static page /50x.html
   #
-  error_page   500 502 503 504  /50x.html;
+  error_page  500 502 503 504  /50x.html;
   location = /50x.html {
     # TODO use existing path
           root   /var/www/nginx-default;
