@@ -3,7 +3,7 @@ limit_req_zone $binary_remote_addr zone=req_zone:10m rate=30r/s;
 limit_conn_zone $binary_remote_addr zone=conn_zone:10m;
 
 server {
-  server_name  {{ ansible_host }} {{ greenlight_aliases|join(' ') }};
+  server_name {{ ansible_host }} {{ greenlight_aliases|join(' ') }};
   listen 80;
   # TODO make var listen [::]:80;
 
@@ -16,8 +16,8 @@ server {
   listen 443 ssl http2 default reuseport;
   # TODO make var listen [::]:443 ssl;
 
-  ssl_certificate {{ ssl_certs_path | default('/etc/ssl/certs') }}/{{ certificates[0] }}.pem;
-  ssl_certificate_key {{ ssl_private_path | default('/etc/ssl/private') }}/{{ certificates[0] }}.key;
+  ssl_certificate {{ greenlight_ssl_cert}};
+  ssl_certificate_key {{ greenlight_ssl_key }};
   ssl_session_cache shared:SSL:10m;
   ssl_session_timeout 10m;
   ssl_protocols TLSv1.3 TLSv1.2;

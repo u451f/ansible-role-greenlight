@@ -26,6 +26,16 @@
         mode: '640'
       notify: restart greenlight
 
+    - name: Ensure pip is installed
+      apt:
+        name: python3-pip
+        state: "{{ greenlight_state }}"
+
+    - name: Ensure docker-compose pip package is present
+      pip:
+        name: docker-compose
+        state: "{{ greenlight_state }}"
+
     - name: Launch docker-compose
       community.docker.docker_compose:
         pull: yes
@@ -55,6 +65,11 @@
 
   tags: greenlight-compose
 
+- import_tasks: certificate.yml
+  tags:
+    - tls
+    - certificates
+
 - name: Deploy nginx reverse proxy
   block:
     - name: Install nginx
@@ -80,6 +95,7 @@
 
 - name: Deploy privacy policy
   import_tasks: privacy-policy.yml
+  when: greenlight_enable_privacy_policy
   tags:
     - greenlight-privacy
     - privacy
