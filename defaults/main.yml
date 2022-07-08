@@ -9,6 +9,7 @@ greenlight_state: present
 greenlight_letsencrypt_enable: true
 
 # bbb_letsencrypt_email:
+greenlight_letsencrypt_api: https://acme-v02.api.letsencrypt.org/directory
 greenlight_ssl_cert: "/root/.acme.sh/{{ greenlight_hostname }}_ecc/fullchain.cer"
 greenlight_ssl_key: "/root/.acme.sh/{{ greenlight_hostname }}_ecc/{{ greenlight_hostname }}.key"
 greenlight_letsencrypt_repo: https://github.com/acmesh-official/acme.sh.git
