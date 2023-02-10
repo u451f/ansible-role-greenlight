@@ -31,11 +31,6 @@
         name: python3-pip
         state: "{{ greenlight_state }}"
 
-    - name: Ensure docker-compose pip package is present
-      pip:
-        name: docker-compose
-        state: "{{ greenlight_state }}"
-
     - name: Launch docker-compose
       community.docker.docker_compose:
         pull: yes
