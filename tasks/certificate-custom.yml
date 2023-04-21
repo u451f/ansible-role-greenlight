@@ -1,0 +1,25 @@
+---
+- name: Ensure target directory exists
+  become: true
+  file:
+    dest: "{{ greenlight_ssl_cert | dirname }}"
+    state: directory
+    mode: '0755'
+
+- name: Deploy custom TLS private key
+  become: true
+  copy:
+    src: '{{ greenlight_own_key }}'
+    dest: '{{ greenlight_ssl_key }}'
+    owner: "root"
+    group: "{{'ssl-cert' if ansible_os_family == 'Debian' else 'root' }}"
+    mode: '0440'
+  notify: reload nginx
+
+- name: Deploy custom TLS certificate
+  become: true
+  copy:
+    src: '{{ greenlight_own_cert }}'
+    dest: '{{ greenlight_ssl_cert }}'
+    mode: '0644'
+  notify: reload nginx

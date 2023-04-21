@@ -1,0 +1,40 @@
+---
+- name: Install socat package
+  apt:
+    name: socat
+    state: "{{ greenlight_state }}"
+
+- name: Clone acme into configured directory.
+  git:
+    repo: "{{ greenlight_letsencrypt_repo }}"
+    dest: "{{ greenlight_letsencrypt_dir }}"
+    version: "{{ greenlight_letsencrypt_version }}"
+    update: "{{ greenlight_letsencrypt_keep_updated }}"
+    force: true
+
+- name: Set acme.sh script variable.
+  set_fact:
+    greenlight_letsencrypt_script: "{{ greenlight_letsencrypt_dir }}/acme.sh"
+
+- name: Ensure acme.sh is executable.
+  file:
+    path: "{{ greenlight_letsencrypt_script }}"
+    mode: 0755
+
+- name: acme install
+  become: true
+  command: "{{ greenlight_letsencrypt_install_command }}"
+  args:
+    chdir: "{{ greenlight_letsencrypt_dir }}"
+  register: acme_install_result
+  changed_when: "'ok' in acme_install_result.stdout"
+
+- name: Generate or renew certificate with acme.sh
+  become: true
+  command: "{{ greenlight_letsencrypt_create_command }}"
+  environment:
+     email: "{{ greenlight_letsencrypt_email }}"
+  register: result
+  changed_when: "'new certificate deployed' in result.stdout"
+  failed_when: "result.rc not in [ 0, 2 ]"
+  notify: reload nginx

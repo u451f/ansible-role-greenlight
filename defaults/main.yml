@@ -1,4 +1,45 @@
 ---
+greenlight_hostname: "{{ inventory_hostname }}"
+
+# greenlight__bbb_endpoint:
+# greenlight_bbb_endpoint_secret
+greenlight_enable_recordings: true
+
+greenlight_state: present
+greenlight_letsencrypt_enable: true
+
+# bbb_letsencrypt_email:
+greenlight_letsencrypt_api: https://acme-v02.api.letsencrypt.org/directory
+greenlight_ssl_cert: "/root/.acme.sh/{{ greenlight_hostname }}_ecc/fullchain.cer"
+greenlight_ssl_key: "/root/.acme.sh/{{ greenlight_hostname }}_ecc/{{ greenlight_hostname }}.key"
+greenlight_letsencrypt_repo: https://github.com/acmesh-official/acme.sh.git
+greenlight_letsencrypt_dir: /opt/acme
+greenlight_letsencrypt_version: master
+greenlight_letsencrypt_keep_updated: true
+# https://github.com/acmesh-official/acme.sh/wiki/How-to-issue-a-cert
+greenlight_letsencrypt_install_command: >-
+  {{ greenlight_letsencrypt_script }} --install
+  --home /root/.acme.sh
+  --config-home /root/.acme.sh
+  --certhome /root/.acme.sh
+  --days 30
+  --accountemail {{ greenlight_letsencrypt_email }}
+  --accountkey /root/.acme.sh/account.key
+
+greenlight_letsencrypt_create_command: >-
+  {{ greenlight_letsencrypt_script }} --issue --domain {{ greenlight_hostname }}
+  --standalone
+  --server letsencrypt
+  --keylength ec-256
+  --pre-hook "systemctl stop nginx.service"
+  --post-hook "systemctl start nginx.service"
+  --server {{ greenlight_letsencrypt_api }}
+
+# Set `greenlight_letsencrypt_enable: false` to deploy custom certificate and private
+# key files.
+# greenlight_own_cert:
+# greenlight_own_key:
+
 # openssk rand -hex 64
 #greenlight_secret_key:
 
@@ -48,7 +89,7 @@ greenlight_smtp_sender: ''
 
 greenlight_report_url: https://github.com/bigbluebutton/greenlight/issues/new
 greenlight_help_url: https://docs.bigbluebutton.org/greenlight/gl-overview.html
-greenlight_relative_url_root: "/b"
+greenlight_relative_url_root: "/"
 # max size of preuploaded presentations (nginx client_max_body_size)
 greenlight_max_presentation_upload_size: '30m'
 
@@ -64,3 +105,5 @@ greenlight_log_level: 'info'
 greenlight_enable_recording_thumbnails: true
 # orginal logo url
 # https://raw.githubusercontent.com/bigbluebutton/greenlight/master/app/assets/images/logo_with_text.png
+
+greenlight_enable_privacy_policy: false
