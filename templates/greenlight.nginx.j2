@@ -90,6 +90,11 @@ server {
   location /rails/active_storage {
     return 301 {{ greenlight_relative_url_root }}$request_uri;
   }
+
+  # Because we want / to redirect to /b
+  location = / {
+    return 301 {{ greenlight_relative_url_root }};
+  }
   {% endif %}
 
   include snippets/locations/*.conf;
