@@ -8,6 +8,11 @@ greenlight_enable_recordings: true
 greenlight_state: present
 greenlight_letsencrypt_enable: true
 
+# set to true if bbb and greenlight are on the same host: greenlight
+# nginx config will be deployed without the server parts and as
+# /etc/bigbluebutton/nginx/greenlight (included in bbb nginx config)
+greenlight_bbb_share_nginx: false
+
 # bbb_letsencrypt_email:
 greenlight_letsencrypt_api: https://acme-v02.api.letsencrypt.org/directory
 greenlight_ssl_cert: "/root/.acme.sh/{{ greenlight_hostname }}_ecc/fullchain.cer"
