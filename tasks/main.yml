@@ -95,6 +95,7 @@
     dest: /etc/bigbluebutton/nginx/greenlight.nginx
   tags: greenlight-nginx
   when: greenlight_bbb_share_nginx
+  notify: restart nginx
 
 - name: Deploy privacy policy
   import_tasks: privacy-policy.yml
